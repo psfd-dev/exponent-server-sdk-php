@@ -21,7 +21,7 @@ class ExpoFileDriver implements ExpoRepository
      *
      * @return bool
      */
-    public function store($key, $value): bool
+    public function store($key, $value)
     {
         $storageInstance = null;
 
@@ -61,14 +61,16 @@ class ExpoFileDriver implements ExpoRepository
      *
      * @return array|string|null
      */
-    public function retrieve(string $key)
+    public function retrieve($key)
     {
         $token = null;
 
         $storageInstance = $this->getRepository();
 
-        $token = $storageInstance->{$key}?? null;
-
+        $token = null;
+        if (isset($storageInstance->{$key})) {
+            $token = $storageInstance->{$key};
+        }
         return $token;
     }
 
@@ -80,7 +82,7 @@ class ExpoFileDriver implements ExpoRepository
      *
      * @return bool
      */
-    public function forget(string $key, string $value = null): bool
+    public function forget($key, $value = null)
     {
         $storageInstance = null;
 
@@ -173,7 +175,7 @@ class ExpoFileDriver implements ExpoRepository
      * @param  string $storage path to token storage json file
      * @return self
      */
-    public function setStorage(string $storage): self
+    public function setStorage($storage)
     {
         $this->storage = $storage;
         return $this;

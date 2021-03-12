@@ -170,7 +170,11 @@ class Expo
     public function getCurl()
     {
         // Create or reuse existing cURL handle
-        $this->ch = $this->ch ?? curl_init();
+        if (isset($this->ch)) {
+            $this->ch = $this->ch;
+        } else {
+            $this->ch = curl_init();
+        }
 
         // Throw exception if the cURL handle failed
         if (!$this->ch) {
@@ -196,7 +200,11 @@ class Expo
             'status_code' => curl_getinfo($ch, CURLINFO_HTTP_CODE)
         ];
 
-        $responseData = json_decode($response['body'], true)['data'] ?? null;
+        $responseData = null;
+        
+        if (isset(json_decode($response['body'], true)['data'])) {
+            $responseData = json_decode($response['body'], true)['data'];
+        }
 
         if (! is_array($responseData)) {
             throw new UnexpectedResponseException();
