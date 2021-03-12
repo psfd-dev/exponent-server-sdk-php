@@ -98,7 +98,7 @@ class Expo
         $recipients = $this->registrar->getInterests($interests);
 
         foreach ($recipients as $token) {
-            $postData[] = $data + ['to' => $token];
+            $postData[] = $data + ['to' => $token, 'sound' => 'default'];
         }
 
         $ch = $this->prepareCurl();
