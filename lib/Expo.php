@@ -199,17 +199,34 @@ class Expo
             'body' => curl_exec($ch),
             'status_code' => curl_getinfo($ch, CURLINFO_HTTP_CODE)
         ];
-
-        $responseData = null;
         
-        if (isset(json_decode($response['body'], true)['data'])) {
-            $responseData = json_decode($response['body'], true)['data'];
-        }
+        $responseData = json_decode($response['body'], true)['data'] ?? null;
 
         if (! is_array($responseData)) {
-            throw new UnexpectedResponseException();
+            throw new UnexpectedResponseException(
+                $this->handleWithUnexpectedResponse($response)
+            );
         }
 
         return $responseData;
+    }
+
+
+    /**
+     * Handle with unexpected response error
+     *
+     * @throws UnexpectedResponseException
+     *
+     * @return null|resource
+     */
+    private function handleWithUnexpectedResponse($response) 
+    {
+        if (is_array($response) && isset($response['body'])) {
+            $errors = json_decode($response['body'])->errors ?? [];
+
+            return $errors[0]->message ?? null;
+        }
+
+        return null;
     }
 }
